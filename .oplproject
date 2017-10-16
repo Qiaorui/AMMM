@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="ASCII"?><project>
 	<version>1.0</version>
 	<configs>
-		<config category="opl" default="true" name="Configuration1">
-			<ref name="session 2.dat" type="data">
+		<config default="true" name="Configuration1" category="opl">
+			<ref type="data" name="session 2.dat">
 			</ref>
-			<ref name="session 2.mod" type="model">
+			<ref type="model" name="session 2.mod">
+			</ref>
+		</config>
+		<config default="false" name="Configuraci&amp;#243;n 1" category="opl">
+			<ref type="model" name="session 2a.mod">
+			</ref>
+			<ref type="data" name="session 2.dat">
 			</ref>
 		</config>
 	</configs>
