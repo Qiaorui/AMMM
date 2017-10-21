@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="ASCII"?><project>
 	<version>1.0</version>
 	<configs>
-		<config default="false" name="Configuraci&amp;#243;n 1" category="opl">
-			<ref type="model" name="session 3.mod">
+		<config category="opl" default="false" name="Configuraci&amp;#243;n 1">
+			<ref name="Copy of session 3.mod" type="model">
 			</ref>
-			<ref type="data" name="session 3.dat">
+			<ref name="medium.dat" type="data">
 			</ref>
 		</config>
-		<config default="true" name="Configuraci&amp;#243;n 2" category="opl">
-			<ref type="model" name="session 3.mod">
+		<config category="opl" default="true" name="Configuraci&amp;#243;n 2">
+			<ref name="session 3.mod" type="model">
 			</ref>
-			<ref type="data" name="session 3.dat">
+			<ref name="medium.dat" type="data">
 			</ref>
 		</config>
 	</configs>

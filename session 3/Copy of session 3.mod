@@ -28,11 +28,11 @@ forall(h in H)
 	sum(k in K) x_hk[h,k] == 1;
 // Constraint 2
 forall(t in T, c in C)
-	sum(h in H: TH[t,h] == 1, k in K: CK[c,k] ==1) x_hk[h,k] == sum(h in H)TH[t,h]*x_tc[t,c];
+	sum(h in H, k in K) TH[t,h] * CK[c, k]*x_hk[h,k] == sum(h in H)TH[t,h]*x_tc[t,c];
 // Constraint 3
-forall(c in C, k in K:CK[c,k] == 1)
-  	sum(h in H)rh[h] * x_hk[h,k] <= rc[c];
+forall(c in C, k in K)
+  	sum(h in H)rh[h] * x_hk[h,k] * CK[c,k] <= rc[c];
 // Constraint 4
 forall(c in C)
-	z >= (1/((sum(k in K)CK[c,k])*rc[c])) * sum(h in H, k in K:CK[c,k]==1)x_hk[h,k]*rh[h];
+	z >= (1/(sum(k in K)CK[c,k]*rc[c])) * sum(h in H, k in K)CK[c,k]*x_hk[h,k]*rh[h];
 }
