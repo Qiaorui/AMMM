@@ -4,7 +4,7 @@
 		<config category="opl" default="false" name="Configuraci&amp;#243;n 1">
 			<ref name="Copy of session 3.mod" type="model">
 			</ref>
-			<ref name="medium.dat" type="data">
+			<ref name="large.dat" type="data">
 			</ref>
 		</config>
 		<config category="opl" default="true" name="Configuraci&amp;#243;n 2">

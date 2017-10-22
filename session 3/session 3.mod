@@ -34,5 +34,5 @@ forall(c in C, k in K:CK[c,k] == 1)
   	sum(h in H)rh[h] * x_hk[h,k] <= rc[c];
 // Constraint 4
 forall(c in C)
-	z >= (1/((sum(k in K)CK[c,k])*rc[c])) * sum(h in H, k in K:CK[c,k]==1)x_hk[h,k]*rh[h];
+	z >= (1/(sum(k in K)CK[c,k]*rc[c])) * sum(h in H, k in K:CK[c,k]==1)x_hk[h,k]*rh[h];
 }
