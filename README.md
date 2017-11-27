@@ -9,12 +9,15 @@ This is a lab repository for the course Algorithmic Methods for Mathematical Mod
 * Start to build ILP model
 
 ### Project overview
-* <font color='yellow'>Problem formulation</font>
-* <font color='red'>Integer linear programming model</font>
-* <font color='red'>Instance generator</font>
-* <font color='red'>GRASP</font>
-* <font color='red'>BRKGA</font>
-* <font color='red'>Compare performance and write the report</font>
+| Task                              | Status   |
+| --------------------------------- | :------: |
+| Problem formulation               | checking |
+| Integer linear programming model  | start    |  
+| Instance generator                |    -     |
+| GRASP                             |    -     |
+| BRKGA                             |    -     |
+| Write the report                  |    -     |
+
 
 ## Usage
 ### Clone the project to your local directory
