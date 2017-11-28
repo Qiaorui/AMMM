@@ -5,15 +5,15 @@ This is a lab repository for the course Algorithmic Methods for Mathematical Mod
 ## Nurse project
 
 ### Current working status
-* Check the correctness of mathematical formulation
+* Start to write generator script
 * Start to build ILP model
 
 ### Project overview
 | Task                              | Status   |
 | --------------------------------- | :------: |
-| Problem formulation               | checking |
+| Problem formulation               | done     |
 | Integer linear programming model  | start    |  
-| Instance generator                |    -     |
+| Instance generator                | start    |
 | GRASP                             |    -     |
 | BRKGA                             |    -     |
 | Write the report                  |    -     |
