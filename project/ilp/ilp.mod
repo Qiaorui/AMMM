@@ -4,30 +4,73 @@
  * Creation Date: Jun 8, 2017 at 11:46:35 AM
  *********************************************/
 
- // A
+ // INPUT DATA
  int numNurses = ...;
  int hours = ...;
  range N = 1..numNurses;
  range H = 1..hours;
- 
  int demand [h in H]= ...;
  int minHours = ...;
  int maxHours = ...;
  int maxConsec = ...;
- 
- // B
  int maxPresence = ...;
+
+ // DECISION VARIABLES
+ // whether nurse n works at hour h
+ dvar boolean works[n in N, h in H];
+ // whether nurse n works
+ dvar boolean working[n in N]; 
+ // nurse n works before h
+ dvar boolean worksBefore[n in N, h in H];
+ // nurse n works after h
+ dvar boolean worksAfter[n in N, h in H];
  
- // A
- dvar boolean works[n in N][h in H]; // this set of variable should suffice for A). Tells whether nurse n works at hour h
+ // objective function
+ minimize sum(n in N) working[n];
  
- minimize 1; // do not change this for A)
+ // constraints
  subject to {
  
- 	// This constraint does not make any sense
- 	forall(n in N)
- 	  	sum (h in H : h%2 == 0) works[n][h] <= 12;
-   	  	   	
+ 	// 1 min demmand_h nurses in hour h
+ 	forall(h in H)
+ 	  	sum (n in N) works[n,h] >= demand[h];
+   	  
+   	// 2 each nurse should work at least min hours
+   	forall (n in N)
+   	  	sum (h in H) works[n,h] >= minHours * working[n];
+   	  	
+   	// 3 each nurse should work at most max hours
+   	forall (n in N)
+   	  	sum (h in H) works[n,h] <= maxHours * working[n];  
+   	  
+   	// 4 each nurse should work at most max consec hours  
+   	forall (n in N, h in 1..(hours-maxConsec))
+   	  	sum (i in h..(h+maxConsec)) works[n,i] <= maxConsec;  
+   	
+   	// 5 
+	forall (n in N, h in H)
+		worksBefore[n,h] * hours >= sum (i in 1..(h-1)) works[n,i];
+		
+	// 6
+	forall (n in N, h in H)
+		worksBefore[n,h] <= sum (i in 1..(h-1)) works[n,i];
+	// 7
+	forall (n in N, h in H)
+		worksAfter[n,h] * hours >= sum (i in (h+1)..hours) works[n,i];
+	
+	// 8
+	forall (n in N, h in H)
+		worksAfter[n,h] <= sum (i in (h+1)..hours) works[n,i];
+	
+	// 9	
+	forall (n in N)
+	  	sum (h in H) (worksAfter[n,h] + worksBefore[n,h]) + 2 - hours <= maxPresence;
+	
+	// 10
+	forall (n in N, h in 1..(hours-1))
+	  	works[n,h] + works[n,h+1] + 3 >= worksAfter[n,h] + worksBefore[n,h] + worksAfter[n,h+1] +
+	  	worksBefore[n,h+1];
+   	
  }
  
  execute { // Should not be changed. Assumes that variables works[n][h] are used.

@@ -6,13 +6,13 @@ This is a lab repository for the course Algorithmic Methods for Mathematical Mod
 
 ### Current working status
 * Start to write generator script
-* Start to build ILP model
+* ILP model is done, we need to check and comment the code
 
 ### Project overview
 | Task                              | Status   |
 | --------------------------------- | :------: |
 | Problem formulation               | done     |
-| Integer linear programming model  | start    |  
+| Integer linear programming model  | check    |  
 | Instance generator                | start    |
 | GRASP                             |    -     |
 | BRKGA                             |    -     |
