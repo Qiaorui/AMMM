@@ -11,8 +11,6 @@ main {
 	var src = new IloOplModelSource("ilp.mod");
 	var def = new IloOplModelDefinition(src);
 	var cplex = new IloCplex();
-	var model = new IloOplModel(def,cplex);
-	
 	
 	var oplDataPath = thisOplModel.dataElements.dataPath;
 	
@@ -25,24 +23,29 @@ main {
 		writeln( "ERROR : Not a directory: ", oplDataPath);
 		status = false;
 	}
+	
+	var output = new IloOplOutputFile("result.txt");
 	var f = dataDir.getFirstFileName();
-	while( f != null ) {  	
-		var entryName = dataDir.name + dataDir.separator + f; 
-		writeln(entryName)
+	while( f != null ) {
+		output.write(f);
+		var model = new IloOplModel(def,cplex);
+		var filePath = dataDir.name + dataDir.separator + f; 
+		var data = new IloOplDataSource(filePath);
+		model.addDataSource(data);
+		model.generate();
+		if (cplex.solve()) {
+			output.writeln(", " + cplex.getBestObjValue() + ", " + cplex.getCplexTime() + ", " + cplex.getSolvedTime());
+		} else {
+			output.writeln(": ERROR")		
+		}
+		model.end();
+ 		data.end();
+		
 		f = dataDir.getNextFileName();			
 	}
+	output.close();
 	
-	/*var data = new IloOplDataSource("sample.dat");
-	model.addDataSource(data);
-	model.generate();
-	if (cplex.solve()) {
-		writeln("value " + cplex.getBestObjValue())
-	}
-	model.end();
- 	data.end();
  	def.end();
  	cplex.end();
  	src.end();
- 	*/
-
 }
