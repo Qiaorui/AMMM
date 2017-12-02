@@ -2,9 +2,9 @@
 	<version>1.0</version>
 	<configs>
 		<config category="opl" default="true" name="Configuration1">
-			<ref name="sample.dat" type="data">
+			<ref name="config.dat" type="data">
 			</ref>
-			<ref name="ilp.mod" type="model">
+			<ref name="unit_test.mod" type="model">
 			</ref>
 		</config>
 	</configs>
