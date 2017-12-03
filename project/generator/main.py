@@ -1,48 +1,24 @@
 #!/usr/bin/python
 import random
-import sys
+import os
 from nurseTest import Instance
 
-"""
-// A
-numNurses = 20;
-hours = 24;
-demand = [2 2 1 1 1 2 2 3 4 6 6 7 5 8 8 7 6 6 4 3 4 3 3 3];
-minHours = 5;
-maxHours = 9;
-maxConsec = 3;
-
-// B
-maxPresence = 14;
-
-
-
-hours >= maxHours >= minHours
-hours >= maxConsec >= maxHours
-hours >= maxPresence >= maxConsec
-minHours means nothing
-mininium Nurse = demand.max * (hours / maxHours )
-
-maxPresence <= maxHours*2-2
-
-"""
-
-
-"""
-Input:
-% occupancy
-number of minimum nurse
-numNurse
-"""
-
-
-
-
+start = 8
+end = 100
+repetition = 10
+directory = "../benchmark/"
 
 def main():
     random.seed(7)
-    i = Instance()
-    print(i.numNurses)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    for i in range(start, end):
+        for j in range(repetition):
+            benchmark = Instance(i)
+            with open(directory + "x_" + str(i) + "_" + str(j), 'w') as file:
+                file.write(benchmark.__str__())
+            print(benchmark)
 
 
 
