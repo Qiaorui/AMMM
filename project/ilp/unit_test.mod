@@ -213,10 +213,6 @@ main {
 	model.generate();
 	if (cplex.solve()) {
 		var passed = true;
-		// With this data, we expected 2 nurses which works 1 hour.
-		for (var n in model.works) {
-			passed &= sum(model.works[n]) <= 1;		
-		}
 		// 2 nurse is working
 		passed &= (sum(model.working) == 2);
 		if (passed) {
