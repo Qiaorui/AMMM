@@ -5,17 +5,17 @@ This is a lab repository for the course Algorithmic Methods for Mathematical Mod
 ## Nurse project
 
 ### Current working status
-* Start to write generator script
-* ILP model is done, we need to check and comment the code
+* Run benchmark using ilp model
+* Study GRASP and BRKGA, then do the pseudo-code
 
 ### Project overview
 | Task                              | Status   |
 | --------------------------------- | :------: |
 | Problem formulation               | done     |
-| Integer linear programming model  | check    |  
-| Instance generator                | start    |
-| GRASP                             |    -     |
-| BRKGA                             |    -     |
+| Integer linear programming model  | done     |  
+| Instance generator                | done     |
+| GRASP                             | study    |
+| BRKGA                             | study    |
 | Write the report                  |    -     |
 
 
