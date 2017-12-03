@@ -16,8 +16,6 @@
 		<config category="opl" default="false" name="Configuration3">
 			<ref name="ilp.mod" type="model">
 			</ref>
-			<ref name="benchmark/x_40_4.dat" type="data">
-			</ref>
 		</config>
 	</configs>
 	
