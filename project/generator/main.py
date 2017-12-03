@@ -8,6 +8,7 @@ end = 100
 repetition = 10
 directory = "../benchmark/"
 
+
 def main():
     random.seed(7)
 
@@ -19,8 +20,6 @@ def main():
             with open(directory + "x_" + str(i) + "_" + str(j) + ".dat", 'w') as file:
                 file.write(benchmark.__str__())
             print(benchmark)
-
-
 
 
 if __name__ == "__main__":
