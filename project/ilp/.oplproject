@@ -8,9 +8,15 @@
 			</ref>
 		</config>
 		<config category="opl" default="false" name="Configuration2">
+			<ref name="main.mod" type="model">
+			</ref>
+			<ref name="config.dat" type="data">
+			</ref>
+		</config>
+		<config category="opl" default="false" name="Configuration3">
 			<ref name="ilp.mod" type="model">
 			</ref>
-			<ref name="test/test_c6.dat" type="data">
+			<ref name="benchmark/x_40_4.dat" type="data">
 			</ref>
 		</config>
 	</configs>

@@ -16,7 +16,7 @@ def main():
     for i in range(start, end):
         for j in range(repetition):
             benchmark = Instance(i)
-            with open(directory + "x_" + str(i) + "_" + str(j), 'w') as file:
+            with open(directory + "x_" + str(i) + "_" + str(j) + ".dat", 'w') as file:
                 file.write(benchmark.__str__())
             print(benchmark)
 

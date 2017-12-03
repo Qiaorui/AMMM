@@ -94,3 +94,5 @@ fabric.properties
 
 # Sonarlint plugin
 .idea/sonarlint
+
+*.pyc

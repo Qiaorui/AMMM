@@ -4,15 +4,15 @@
  * Creation Date: Dec 2, 2017 at 10:37:45 AM
  *********************************************/
 
-string dataPath = ...;
-int runType = ...;
+string testPath = ...;
+string benchmarkPath = ...;
  
 main {
 	var src = new IloOplModelSource("ilp.mod");
 	var def = new IloOplModelDefinition(src);
 	var cplex = new IloCplex();
 	
-	var oplDataPath = thisOplModel.dataElements.dataPath;
+	var oplDataPath = thisOplModel.dataElements.benchmarkPath;
 	
 	// Check the validity of the data directory
 	var dataDir = new IloOplFile(oplDataPath);
@@ -27,20 +27,21 @@ main {
 	var output = new IloOplOutputFile("result.txt");
 	var f = dataDir.getFirstFileName();
 	while( f != null ) {
-		output.write(f);
+		var msg = f;
 		var model = new IloOplModel(def,cplex);
 		var filePath = dataDir.name + dataDir.separator + f; 
 		var data = new IloOplDataSource(filePath);
 		model.addDataSource(data);
 		model.generate();
 		if (cplex.solve()) {
-			output.writeln(", " + cplex.getBestObjValue() + ", " + cplex.getCplexTime() + ", " + cplex.getSolvedTime());
+			msg += ", " + cplex.getBestObjValue() + ", " + cplex.getCplexTime() + ", " + cplex.getSolvedTime();
 		} else {
-			output.writeln(": ERROR")		
+			msg += ": ERROR";		
 		}
 		model.end();
  		data.end();
-		
+ 		writeln(msg);
+		output.writeln(msg);
 		f = dataDir.getNextFileName();			
 	}
 	output.close();

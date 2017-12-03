@@ -38,7 +38,7 @@ maxPresence <= maxHours*2-2
     def random(self):
         self.demand = [int(self.hours/1.5*random.random()) for i in range(self.hours)]
         self.maxHours = random.randrange(max(self.hours//4, 3), self.hours // 1.5)
-        self.numNurses = math.ceil(self.hours / 1.5) * math.ceil(self.hours / self.maxHours)
+        self.numNurses = int(math.ceil(self.hours / 1.5) * math.ceil(self.hours / self.maxHours))
         self.maxPresence = random.randrange(self.maxHours + 1, min(self.maxHours * 2 - 1, self.hours))
         self.maxConsec = random.randrange(2, self.maxHours)
         self.minHours = random.randrange(1, self.maxHours)
@@ -50,7 +50,7 @@ maxPresence <= maxHours*2-2
              "minHours = {3};\n"
              "maxHours = {4};\n"
              "maxConsec = {5};\n"
-             "maxPresence = {6}").format(self.numNurses, self.hours, self.demand.__str__().replace(",", ""), self.minHours, self.maxHours,
+             "maxPresence = {6};").format(self.numNurses, self.hours, self.demand.__str__().replace(",", ""), self.minHours, self.maxHours,
                                          self.maxConsec, self.maxPresence)
 
 
