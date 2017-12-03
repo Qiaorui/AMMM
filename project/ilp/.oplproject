@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="ASCII"?><project>
 	<version>1.0</version>
 	<configs>
-		<config category="opl" default="true" name="Configuration1">
-			<ref name="config.dat" type="data">
-			</ref>
-			<ref name="unit_test.mod" type="model">
-			</ref>
-		</config>
-		<config category="opl" default="false" name="Configuration2">
+		<config category="opl" default="false" name="Benchmark">
 			<ref name="main.mod" type="model">
 			</ref>
 			<ref name="config.dat" type="data">
 			</ref>
 		</config>
-		<config category="opl" default="false" name="Configuration3">
+		<config category="opl" default="true" name="Unit test">
+			<ref name="config.dat" type="data">
+			</ref>
+			<ref name="unit_test.mod" type="model">
+			</ref>
+		</config>
+		<config category="opl" default="false" name="Run">
 			<ref name="ilp.mod" type="model">
+			</ref>
+			<ref name="benchmark/x_10_1.dat" type="data">
 			</ref>
 		</config>
 	</configs>

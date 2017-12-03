@@ -64,7 +64,7 @@ main {
 		model.addDataSource(data);
 		model.generate();
 		if (cplex.solve()) {
-			msg += ", " + cplex.getBestObjValue() + ", " + cplex.getCplexTime() + ", " + cplex.getSolvedTime();
+			msg += ", " + cplex.getBestObjValue() + ", " + cplex.getSolvedTime();
 		} else {
 			msg += ": ERROR";		
 		}
