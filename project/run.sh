@@ -1,5 +1,5 @@
 #!/bin/bash
-clear
+#clear
 
 echo "->Start Scripting"
 X_ARGS='ilp/main.mod ilp/config.dat'
