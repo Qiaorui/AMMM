@@ -29,11 +29,11 @@ main {
 			return 0;		
 		}
 	}
-	
+
+	// Initialization	
 	var src = new IloOplModelSource("ilp.mod");
 	var def = new IloOplModelDefinition(src);
 	var cplex = new IloCplex();
-	
 	var oplDataPath = thisOplModel.dataElements.benchmarkPath;
 	
 	// Check the validity of the data directory
@@ -44,7 +44,6 @@ main {
 		writeln( "ERROR : Not a directory: ", oplDataPath);
 	}
 	
-	var output = new IloOplOutputFile("result.txt");
 	// Get sorted file name
 	var f = dataDir.getFirstFileName();
 	var fList = new Array();
@@ -56,6 +55,8 @@ main {
 	}
 	fList.sort(mSortFunction);
 	
+	// Write CPLEX result to file
+	var output = new IloOplOutputFile("result.txt");
 	for (var k = 0; k < fList.length; k++) {
 		var msg = fList[k];
 		var model = new IloOplModel(def,cplex);
@@ -75,6 +76,7 @@ main {
 	}
 	output.close();
 	
+	// finish
  	def.end();
  	cplex.end();
  	src.end();
