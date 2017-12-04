@@ -1,8 +1,20 @@
 #!/bin/bash
-
 clear
 
 echo "->Start Scripting"
+X_ARGS='ilp/main.mod ilp/config.dat'
+
+if [ $1 == "test" ]; then
+  X_ARGS='ilp/unit_test.mod ilp/config.dat'
+fi
+if [ $# -eq 2 ]; then
+  X_ARGS=$1 $2
+fi
+
+if [ ! -d "benchmark" ]; then
+  python generator/main.py
+fi
+
 echo "->Detecting OS"
 case "$(uname -s)" in
 
@@ -14,9 +26,7 @@ case "$(uname -s)" in
     echo '  Linux Detected, Running...'
     P="$(printenv LD_LIBRARY_PATH)"
     echo $P
-    if [ "$P" != "" ]; then 
-       echo "find LD_LIBRARY_PATH"
-    else
+    if [ "$P" == "" ]; then 
        echo "Create LD_LIBRARY_PATH"
     fi
      # find Applications/ -path "*/CPLEX_*/*" -type d -iname 'cplex'
@@ -25,7 +35,8 @@ case "$(uname -s)" in
     ;;
 
   CYGWIN*|MINGW32*|MSYS*)
-    echo '  MS Windows Detected, not implement yet'
+    echo '  MS Windows Detected, Running...'
+    oplrun.exe $X_ARGS
     ;;
 
    # Add here more strings to compare

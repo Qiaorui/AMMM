@@ -6,7 +6,7 @@ from nurseTest import Instance
 start = 8
 end = 100
 repetition = 10
-directory = "../benchmark/"
+directory = "./benchmark/"
 
 
 def main():
