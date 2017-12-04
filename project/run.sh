@@ -8,7 +8,7 @@ if [ $1 == "test" ]; then
   X_ARGS='ilp/unit_test.mod ilp/config.dat'
 fi
 if [ $# -eq 2 ]; then
-  X_ARGS=$1 $2
+  X_ARGS="$1 $2"
 fi
 
 if [ ! -d "benchmark" ]; then
@@ -46,7 +46,5 @@ case "$(uname -s)" in
     echo '  Unknown OS, exit' 
     ;;
 esac
-
-
 
 echo "->Exit"
