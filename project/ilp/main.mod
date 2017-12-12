@@ -9,6 +9,15 @@ string benchmarkPath = ...;
  
 main {
 	
+		// Sum function for IloMap Object
+	function sum (list) {
+		var acc = 0;
+		for (var i in list) {
+			acc += list[i];		
+		}
+		return acc;
+	}
+	
 	function mSortFunction(x, y) {
 		var str1 = x.split(".")[0].split("_");
 		var str2 = y.split(".")[0].split("_");
@@ -33,8 +42,10 @@ main {
 	// Initialization	
 	var src = new IloOplModelSource("ilp.mod");
 	var def = new IloOplModelDefinition(src);
-	var cplex = new IloCplex();
+	
 	var oplDataPath = thisOplModel.dataElements.benchmarkPath;
+	thisOplModel.settings.mainEndEnabled = true;
+
 	
 	// Check the validity of the data directory
 	var dataDir = new IloOplFile(oplDataPath);
@@ -44,6 +55,7 @@ main {
 		writeln( "ERROR : Not a directory: ", oplDataPath);
 	}
 	
+
 	// Get sorted file name
 	var f = dataDir.getFirstFileName();
 	var fList = new Array();
@@ -59,18 +71,21 @@ main {
 	var output = new IloOplOutputFile("result.txt");
 	for (var k = 0; k < fList.length; k++) {
 		var msg = fList[k];
+		var cplex = new IloCplex();
+		cplex.tilim = 2400;
 		var model = new IloOplModel(def,cplex);
 		var filePath = dataDir.name + dataDir.separator + fList[k]; 
 		var data = new IloOplDataSource(filePath);
 		model.addDataSource(data);
 		model.generate();
 		if (cplex.solve()) {
-			msg += ", " + cplex.getBestObjValue() + ", " + cplex.getSolvedTime();
+			msg += ", " + sum(model.working) + ", " + cplex.getSolvedTime();
 		} else {
 			msg += ": ERROR";		
 		}
 		model.end();
  		data.end();
+ 		cplex.end();
  		writeln(msg);
 		output.writeln(msg);
 	}
@@ -78,6 +93,6 @@ main {
 	
 	// finish
  	def.end();
- 	cplex.end();
+ 	
  	src.end();
 }

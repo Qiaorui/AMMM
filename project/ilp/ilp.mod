@@ -41,6 +41,9 @@
    	forall (n in N, h in 1..(hours-maxConsec))
    	  	sum (i in h..(h+maxConsec)) works[n,i] <= maxConsec;  
    	
+   	forall(n in N, h in 1..hours-maxPresence)
+ 	  sum(i in h+maxPresence..hours) works[n, i] <= hours * (1 - works[n, h]);
+ 	  
    	// 5 
 	forall (n in N, h in H)
 		worksBefore[n,h] * hours >= sum (i in 1..(h-1)) works[n,i];
@@ -56,9 +59,7 @@
 	forall (n in N, h in H)
 		worksAfter[n,h] <= sum (i in (h+1)..hours) works[n,i];
 	
-	// 9	
-	forall (n in N)
-	  	sum (h in H) (worksAfter[n,h] + worksBefore[n,h]) + 2 - hours <= maxPresence;
+
 	
 	// 10
 	forall (n in N, h in 1..(hours-1))
@@ -66,7 +67,7 @@
 	  	worksBefore[n,h+1];
    	
  }
- 
+ /*
  execute { // Should not be changed. Assumes that variables works[n][h] are used.
   	for (var n in N) {
 		write("Nurse ");
@@ -105,4 +106,4 @@
 		write(" " + total);		
 	}		
 }  
- 
+*/
