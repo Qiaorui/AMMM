@@ -1,16 +1,7 @@
-/*********************************************
- * OPL 12.6.0.0 Data
- * Author: Wangyang Ye, Hongping Feng
- * Creation Date: 2017-11-26 at 16:11:55
- *********************************************/
-// A
- numNurses = 20;
- hours =  24;
- demand = [ 2 2 1 1 1 2 2 3 4 6 6 7 5 8 8 7 6 6 4 3 4 3 3 3 ];
- minHours = 5;
- maxHours = 9;
- maxConsec = 3;
- 
- // B
- maxPresence = 14;
-  
+numNurses = 3;
+hours =  5;
+demand = [ 1 0 0 1 0];
+minHours = 1;
+maxHours = 2;
+maxConsec = 4;
+maxPresence = 4;

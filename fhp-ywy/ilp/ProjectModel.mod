@@ -57,11 +57,11 @@
  	  worksBefore[n, h] * hours >= sum(i in 1..h-1) works[n,i];
  	
  	// Constraint 8: if nurse n works after hour h
- 	forall(n in N, h in 1..hours-1)
+ 	forall(n in N, h in H)
  	  worksAfter[n, h] <= sum(i in h+1..hours) works[n,i];
  	  
  	// Constraint 9: 
- 	forall(n in N, h in 1..hours-1)
+ 	forall(n in N, h in H)
  	  worksAfter[n, h] * hours >= sum(i in h+1..hours) works[n,i];
  	  
  	// Constraint 10: if nurse n does not works at hour h AND 
