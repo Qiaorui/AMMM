@@ -1,0 +1,8 @@
+# file name: instances/instance_XX.dat
+instancesDirectory = instances;
+fileNamePrefix = example;
+fileNameExtension = dat;
+numInstances = 1;
+
+minHoursCanGenerate = 24;
+maxHoursCanGenerate = 24;
