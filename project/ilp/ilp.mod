@@ -14,10 +14,7 @@
  dvar boolean works[n in N, h in H];
  // whether nurse n works
  dvar boolean working[n in N]; 
- // nurse n works before h
- dvar boolean worksBefore[n in N, h in H];
- // nurse n works after h
- dvar boolean worksAfter[n in N, h in H];
+
  
  // objective function
  minimize sum(n in N) working[n];
@@ -43,28 +40,10 @@
    	
    	forall(n in N, h in 1..hours-maxPresence)
  	  sum(i in h+maxPresence..hours) works[n, i] <= hours * (1 - works[n, h]);
- 	  
-   	// 5 
-	forall (n in N, h in H)
-		worksBefore[n,h] * hours >= sum (i in 1..(h-1)) works[n,i];
-		
+ 	  	
 	// 6
-	forall (n in N, h in H)
-		worksBefore[n,h] <= sum (i in 1..(h-1)) works[n,i];
-	// 7
-	forall (n in N, h in H)
-		worksAfter[n,h] * hours >= sum (i in (h+1)..hours) works[n,i];
-	
-	// 8
-	forall (n in N, h in H)
-		worksAfter[n,h] <= sum (i in (h+1)..hours) works[n,i];
-	
-
-	
-	// 10
-	forall (n in N, h in 1..(hours-1))
-	  	works[n,h] + works[n,h+1] + 3 >= worksAfter[n,h] + worksBefore[n,h] + worksAfter[n,h+1] +
-	  	worksBefore[n,h+1];
+	forall (n in N, h in 1..(hours-3))
+	  	 (2 + (-2 * works[n,h]) + works[n,h+1] + works[n,h+2]) * hours >= sum(i in h+3..hours)works[n,i];
    	
  }
  /*
