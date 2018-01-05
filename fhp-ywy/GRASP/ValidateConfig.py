@@ -3,33 +3,42 @@ class ValidateConfig(object):
     @staticmethod
     def validate(data):
         # Validate that mandatory input parameters were found
-        for paramName in ['instancesDirectory', 'fileNamePrefix', 'fileNameExtension', 'numInstances',
-                           'minHoursCanGenerate', 'maxHoursCanGenerate']:
+        for paramName in ['numNurses', 'hours', 'demand', 'minHours',
+                           'maxHours', 'maxConsec', 'maxPresence']:
             if(not data.__dict__.has_key(paramName)):
                 raise Exception('Parameter(%s) not contained in Configuration' % str(paramName))
 
-        # Validate instance file's directory, prefix and extension are provided
-        instancesDirectory = data.instancesDirectory
-        if(len(instancesDirectory) == 0): raise Exception('Value for instancesDirectory is empty')
+        # Validate the correctness of the provided numbers
+        numNurses = data.numNurses
+        if(not isinstance(numNurses, (int, long)) or (numNurses <= 0)):
+            raise Exception('numNurses(%s) has to be a positive integer value.' % str(numNurses))
 
-        fileNamePrefix = data.fileNamePrefix
-        if(len(fileNamePrefix) == 0): raise Exception('Value for fileNamePrefix is empty')
+        hours = data.hours
+        if(not isinstance(hours, (int, long)) or (hours <= 0)):
+            raise Exception('hours(%s) has to be a positive integer value.' % str(hours))
 
-        fileNameExtension = data.fileNameExtension
-        if(len(fileNameExtension) == 0): raise Exception('Value for fileNameExtension is empty')
+        if (len(data.demand)) != hours:
+            raise Exception('Demand list(%s) should have same size as hours(%s).' % (str(len(data.demand)), str(hours)))
 
-        # Validate the correctness of the provided number of instances to generate
-        numInstances = data.numInstances
-        if(not isinstance(numInstances, (int, long)) or (numInstances <= 0)):
-            raise Exception('numInstances(%s) has to be a positive integer value.' % str(numInstances))
+        minHours = data.minHours
+        if (not isinstance(minHours, (int, long)) or (minHours <= 0)):
+            raise Exception('minHours(%s) has to be a positive integer value.' % str(minHours))
 
-        minHoursCanGenerate = data.minHoursCanGenerate
-        if(not isinstance(minHoursCanGenerate, (int, long)) or (minHoursCanGenerate <= 0)):
-            raise Exception('minHoursCanGenerate(%s) has to be a positive integer value.' % str(minHoursCanGenerate))
+        maxHours = data.maxHours
+        if (not isinstance(maxHours, (int, long)) or (maxHours <= 0)):
+            raise Exception('maxHours(%s) has to be a positive integer value.' % str(maxHours))
 
-        maxHoursCanGenerate = data.maxHoursCanGenerate
-        if (not isinstance(maxHoursCanGenerate, (int, long)) or (maxHoursCanGenerate <= 0)):
-            raise Exception('maxHoursCanGenerate(%s) has to be a positive integer value.' % str(maxHoursCanGenerate))
+        maxConsec = data.maxConsec
+        if (not isinstance(maxConsec, (int, long)) or (maxConsec <= 0)):
+            raise Exception('maxConsec(%s) has to be a positive integer value.' % str(maxConsec))
 
-        if (maxHoursCanGenerate < minHoursCanGenerate):
-            raise Exception('maxHoursCanGenerate(%s) has to be greater or equal than minHoursCanGenerate(%s).' % (str(maxHoursCanGenerate), str(minHoursCanGenerate)))
+        maxPresence = data.maxPresence
+        if (not isinstance(maxPresence, (int, long)) or (maxPresence <= 0)):
+            raise Exception('maxPresence(%s) has to be a positive integer value.' % str(maxPresence))
+
+        if (maxHours < minHours):
+            raise Exception('maxHours(%s) has to be greater or equal than minHours(%s).' % (str(maxHours), str(minHours)))
+
+        if (maxPresence < maxHours):
+            raise Exception(
+                'maxPresence(%s) has to be greater or equal than maxHours(%s).' % (str(maxPresence), str(maxHours)))

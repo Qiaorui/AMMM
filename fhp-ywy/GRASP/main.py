@@ -1,5 +1,6 @@
 from __future__ import print_function
 import argparse, math, random, time
+import itertools
 from DATParser import DATParser
 from ValidateConfig import ValidateConfig
 
@@ -14,14 +15,14 @@ lambdaE = 300
 
 # Determine if the demand is satisfied with solution sol_h
 def isDemandSatisfied(sol_h, demand):
-    start = time.time()
+    #start = time.time()
     nursesUsed = set()
     #print('-----Printing sol to check demand------')
     #print(sol_h)
     for assignment in sol_h:
         nursesUsed.add(assignment['nurseId'])
-    print(time.time() - start)
-    print('-----Printing check demand satisfied-------')
+    #print(time.time() - start)
+    #print('-----Printing check demand satisfied-------')
     return len(nursesUsed) >= demand
 
 # Check minHours, maxHours, maxConsec, maxPresence, demand, no consecutive rest
@@ -34,11 +35,9 @@ def isFeasible(sol):
     # {hour0: [0, 1, 0...], 1: [...] ...}
     for i in xrange(config.hours):
         schedulePerHour[i] = [0] * config.numNurses
-
     for assignment in sol:
         schedulePerNurse[assignment['nurseId']][assignment['hour']] = 1
         schedulePerHour[assignment['hour']][assignment['nurseId']] = 1
-
     """ 1. Check whether all demands are satisfied """
     for hour, nursesAssignment in schedulePerHour.iteritems():
         if sum(nursesAssignment) < config.demand[hour]:
@@ -78,7 +77,7 @@ def isFeasible(sol):
                 return False, sol
             """ 6. Check whether he/she exceeds the minHours, or we could add some hours to fulfill """
             if workingHours < config.minHours:
-                print('---Ops, you have to work more hours---')
+                #print('---Ops, you have to work more hours---')
                 # Check if we could add more working hours to this nurse
                 # First, we try to add hours between firstWorkingHour and lastWorkingHour
                 remainingMinHour = config.minHours - workingHours # number of hours to reach minHours
@@ -188,16 +187,6 @@ def isFeasible(sol):
     # No constraints are violated, which means the solution is feasible
     return True, sol
 
-# Compute the number of nurses that work
-def computeCost(sol):
-    usedNurse = set()
-    for assignment in sol:
-        usedNurse.add(assignment['nurseId'])
-    return len(usedNurse)
-
-def localSearch(sol):
-    return sol
-
 # Return a pair which consists of min and max greedy cost of the candidates
 def getMinMax_gc(candidates):
     #min_gc = max_gc = None
@@ -298,6 +287,13 @@ def getCandElementsAndGC(h, numNurses, sol):
 
     return candidates, sol
 
+# Compute the number of nurses that work
+def computeCost(sol):
+    usedNurse = set()
+    for assignment in sol:
+        usedNurse.add(assignment['nurseId'])
+    return len(usedNurse)
+
 def greedeConsturctive(hours, numNurses, demand):
     sol = list()
     for h in xrange(hours):
@@ -305,26 +301,26 @@ def greedeConsturctive(hours, numNurses, demand):
             sol_h = list()
             start = time.time()
             candidates, newSol = getCandElementsAndGC(h, numNurses, sol)
-            print(time.time()-start)
+            #print(time.time()-start)
             sol = newSol
-            print('-----Printing all candidates------')
-            print(candidates)
+            #print('-----Printing all candidates------')
+            #print(candidates)
             while len(candidates) != 0:
                 start = time.time()
                 (min_gc, max_gc) = getMinMax_gc(candidates)
-                print(time.time() - start)
-                print('-----Printing min and max------')
+                #print(time.time() - start)
+                #print('-----Printing min and max------')
                 #print(min_gc)
                 #print(max_gc)
                 start = time.time()
                 RCL = getRCL(min_gc, max_gc, candidates)
-                print(time.time() - start)
-                print('-----Printing RCL------')
+                #print(time.time() - start)
+                #print('-----Printing RCL------')
                 #print(RCL)
                 start = time.time()
                 e = randomSelection(RCL)
-                print(time.time() - start)
-                print('-----Printing selected element------')
+                #print(time.time() - start)
+                #print('-----Printing selected element------')
                 #print(e)
                 sol_h.append(e)
                 if isDemandSatisfied(sol_h, demand[h]):
@@ -332,8 +328,8 @@ def greedeConsturctive(hours, numNurses, demand):
                 "Update candidates"
                 start = time.time()
                 candidates = [x for x in candidates if x['nurseId'] != e['nurseId']]
-                print(time.time() - time.time())
-                print('-----Printing updated candidates------')
+                #print(time.time() - time.time())
+                #print('-----Printing updated candidates------')
                 #print (candidates)
             if not isDemandSatisfied(sol_h, demand[h]):
                 return None, float("inf")
@@ -343,17 +339,162 @@ def greedeConsturctive(hours, numNurses, demand):
     res, sol = isFeasible(sol)
     # Check again
     res, sol = isFeasible(sol)
-    print(time.time() - start)
+    #print(time.time() - start)
 
-    """
-    if not isFeasible(sol):
+    if not res:
         return None, float("inf")
-    """
+
     cost = computeCost(sol)
     return sol, cost
 
+def sortNursesByLoad(sol):
+    orderedNurses = list()
+    schedulePerNurse = dict()
+    for assignment in sol:
+        nurseId = assignment['nurseId']
+        hourIndex = assignment['hour']
+
+        if nurseId in schedulePerNurse:
+            workedHours = schedulePerNurse[nurseId]['workedHours']
+            workedHours.append(hourIndex)
+            load = schedulePerNurse[nurseId]['load'] + 1
+            schedulePerNurse[nurseId] = {'load': load, 'workedHours': workedHours}
+        else:
+            schedulePerNurse[nurseId] = dict()
+            schedulePerNurse[nurseId] = {'load': 1, 'workedHours': [hourIndex]}
+    # List of (key, value)
+    return sorted(schedulePerNurse.items(), key=lambda item: item[1]['load'])[::-1]
+
+def simpleCheck(workedHours):
+    hoursAssignment = [0] * config.hours
+    # [0, 1, 0...]
+    #print(hoursAssignment)
+    for hour in xrange(len(workedHours)):
+        hoursAssignment[hour] = 1
+    """ Check other contraints for nurses that work """
+    if sum(hoursAssignment) > 0:
+        # First working hour
+        firstWorkingHour = hoursAssignment.index(1)
+        # Last working hour
+        lastWorkingHour = len(hoursAssignment) - 1 - hoursAssignment[::-1].index(1)
+        """ 2. Check whether he/she exceeds the maxPresence """
+        if lastWorkingHour - firstWorkingHour + 1 > config.maxPresence:
+            return False
+        # A counter for minHours and maxHours
+        workingHours = 0
+        # A counter for maxConsec
+        consecutiveHours = 0
+        # range [firstWorkingHour, lastWorkingHour]
+        for h in xrange(firstWorkingHour, lastWorkingHour + 1):
+            # if nurse works at hour h
+            if hoursAssignment[h] == 1:
+                workingHours += 1
+                consecutiveHours += 1
+                """ 3. Check whether he/she exceeds the maxConsec """
+                if consecutiveHours > config.maxConsec:
+                    return False
+            # if nurse rests at hour h
+            else:
+                """ 4. Check whether he/she rests consecutively """
+                if hoursAssignment[h + 1] == 0:
+                    return False
+                consecutiveHours = 0
+        """ 5. Check whether he/she exceeds the maxHours """
+        if workingHours > config.maxHours:
+            # print('---Ops, you have to work less hours---')
+            return False
+        """ 6. Check whether he/she exceeds the minHours, or we could add some hours to fulfill """
+        if workingHours < config.minHours:
+            return False
+    return True
+
+def createPossibleReassignments(nurseId, workedHours, nursesLoadAndWorkedHours, sol):
+    reassigmentsCandidates = [[] for i in xrange(len(workedHours))]
+    # Check from most assgined to least assigned
+    auxnursesLoadAndWorkedHours = list(nursesLoadAndWorkedHours)
+    for auxNurseId, loadAndWorkedHours in auxnursesLoadAndWorkedHours:
+        if nurseId != auxNurseId:
+            for idx, hour in enumerate(workedHours):
+                # Nurse can possibly work at this hour, we add auxNurseId to the candidate list of this hour
+                if hour not in loadAndWorkedHours['workedHours']:
+                    # Check if it is feasible after adding this hour this nurse auxNurseId
+                    auxSol = list(loadAndWorkedHours['workedHours'])
+                    auxSol.append(hour)
+                    #start = time.time()
+                    res = simpleCheck(auxSol)
+                    #print(time.time() - start)
+                    if res:
+                        reassigmentsCandidates[idx].append(auxNurseId)
+    """
+    for i in xrange(len(workedHours)):
+        # We cannot find a nurse that could works at that hour
+        if 0 == len(reassigmentsCandidates[i]):
+            return None
+    """
+    # [(x,y,z...), ...()] All cambinations of candidates of nurse's working hours
+    for i in (itertools.product(*reassigmentsCandidates)):
+        print(i)
+    #return list(itertools.product(*reassigmentsCandidates))
+    return reassigmentsCandidates
+
+def localSearch(sol):
+    update = True
+    counter = 0
+    while update:
+        update = False
+        # [(1, {'load': x, 'indexes':[x, y...]}, ...] of all working nurses
+        start = time.time()
+        nursesLoadAndWorkedHours = sortNursesByLoad(sol)
+        print(time.time() - start)
+        #
+        #print(nursesLoadAndWorkedHours)
+        solPrimePrime = list(sol)
+        #print('assign primeprime')
+        #showResult(solPrimePrime)
+        for nurseId, loadAndWorkedHours in nursesLoadAndWorkedHours:
+            #print(nurseId)
+            workedHours = loadAndWorkedHours['workedHours']
+            start = time.time()
+            possibleReassignments = createPossibleReassignments(nurseId, workedHours, nursesLoadAndWorkedHours, solPrimePrime)
+            print(time.time() - start)
+            if None == possibleReassignments:
+                continue
+            # Eliminate all assignment of this nurse
+            solAux = [assignment for assignment in sol if assignment['nurseId'] != nurseId]
+            canEliminate = False
+            #print('possible')
+            #print(possibleReassignments)
+            for reassignment in itertools.product(*possibleReassignments):
+                print('I am changing schedule')
+                solPrime = list(solAux)
+                for j in xrange(len(reassignment)):
+                    solPrime.append({'hour': workedHours[j], 'nurseId': reassignment[j], 'gc': 0})
+                if not isFeasible(solPrime):
+                    #print(time.time() - start)
+                    continue
+                # We have found a solution with n-1 nurses
+                print('assign prime to primeprime')
+                solPrimePrime = list(solPrime)
+                update = True
+                canEliminate = True
+                #print(reassignment)
+                #print(nurseId)
+                #print('reassign')
+                #print(time.time() - start)
+                break
+            if canEliminate:
+
+                #print(time.time() - start)
+                break
+        sol = list(solPrimePrime)
+        #print('Updated: ' + str(update))
+        #showResult(solPrimePrime)
+        #print(time.time() - start)
+    return sol
+
 # Print result like CPLEX
 def showResult(sol):
+    #print(sol)
     if None != sol:
         schedulePerNurse = dict()
         schedulePerHour = dict()
@@ -424,7 +565,7 @@ def run():
     print('Reading Data file %s...' % args.dataFile)
     global config
     config = DATParser.parse(args.dataFile)
-    #ValidateConfig.validate(config)
+    ValidateConfig.validate(config)
     print(config.__dict__)
     minCost = None
     minCostSol = None
@@ -441,8 +582,16 @@ def run():
             minCostSol = newSol
     """
     endTime = time.time()
-    print(endTime - startTime)
+    print('\nGreedy constructive time: ' + str(endTime - startTime))
+    print('Greedy constructive result: \n')
     showResult(minCostSol)
+
+    startTime = time.time()
+    newSol = localSearch(minCostSol)
+    endTime = time.time()
+    print('\nLocal search time: ' + str(endTime - startTime))
+    print('Local search result: \n')
+    showResult(newSol)
 
 if __name__ == '__main__':
     run()
