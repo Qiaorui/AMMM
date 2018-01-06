@@ -1,6 +1,6 @@
 numNurses = 2;
 hours =  5;
-demand = [ 0 1 1 1 1];
+demand = [0 1 1 1 1];
 minHours = 3;
 maxHours = 5;
 maxConsec = 4;
