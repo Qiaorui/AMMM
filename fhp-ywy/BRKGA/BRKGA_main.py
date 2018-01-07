@@ -16,7 +16,7 @@ from CONFIGURATION import config # Configuration parameters (problem-dependent a
 
 def showResult(sol):
     #print(sol)
-    schedulePerHour = dict()
+    schedulePerHour = [[0] * data.numNurses for i in xrange(data.hours)]
     for h in xrange(data.hours):
         schedulePerHour[h] = [0] * data.numNurses
     for h in xrange(data.hours):
@@ -92,7 +92,7 @@ print(data.__dict__)
 
 # Main body
 chrLength=decoder.getChromosomeLength(data)
-print(chrLength)
+#print(chrLength)
 
 population=brkga.initializePopulation(numIndividuals,chrLength)
 
@@ -113,10 +113,14 @@ while (i<maxNumGen):
     if numCrossover>0: crossover = brkga.doCrossover(elite,nonelite,ro,numCrossover)
     else: crossover=[]
     population=elite + crossover + mutants
+    #print(population)
     i+=1
+    print("One generation's execution time")
     print(time.time() - start)
 
+#print('\ndoing final decode')
 population = decoder.decode(population, data)
+#print('final decode done')
 bestIndividual = brkga.getBestFitness(population)
 plt.plot(evol)
 plt.xlabel('number of generations')
@@ -124,5 +128,6 @@ plt.ylabel('Fitness of best individual')
 plt.axis([0, len(evol), 0, data.numNurses])
 plt.show()
 
+#print(bestIndividual['solution'])
 showResult(bestIndividual['solution'])
 print(bestIndividual['fitness'])
