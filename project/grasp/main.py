@@ -14,17 +14,16 @@ def parse_data(data):
 
 
 def main():
-    with open("../benchmark/x_20_0.dat", "r") as f:
+    with open("../benchmark/x_40_2.dat", "r") as f:
         data = f.readlines()
         data = "".join([x.strip() for x in data])
     d = parse_data(data)
     g = Grasp(d)
     print(g)
-    sol = g.solve(remaining_iterations=100, alpha=0.2, seed=7)
+    sol = g.solve(remaining_iterations=10, alpha=0.25, seed=7)
     print("finish")
-    for s in sol["schedule"]:
-        print(s)
     print("cost ", sol["cost"])
+    print("demand ", sol['demand'])
 
 
 if __name__ == "__main__":
