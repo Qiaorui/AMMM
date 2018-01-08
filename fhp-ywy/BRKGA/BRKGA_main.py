@@ -98,6 +98,7 @@ population=brkga.initializePopulation(numIndividuals,chrLength)
 
 i=0
 
+start1 = time.time()
 while (i<maxNumGen):
     print(i)
     start = time.time()
@@ -122,6 +123,9 @@ while (i<maxNumGen):
 population = decoder.decode(population, data)
 #print('final decode done')
 bestIndividual = brkga.getBestFitness(population)
+endtime1 = time.time()
+showResult(bestIndividual['solution'])
+print('Execution time: ' + str(endtime1 - start1))
 plt.plot(evol)
 plt.xlabel('number of generations')
 plt.ylabel('Fitness of best individual')
@@ -129,5 +133,5 @@ plt.axis([0, len(evol), 0, data.numNurses])
 plt.show()
 
 #print(bestIndividual['solution'])
-showResult(bestIndividual['solution'])
 print(bestIndividual['fitness'])
+print('Execution time: ' + str(endtime1 - start1))

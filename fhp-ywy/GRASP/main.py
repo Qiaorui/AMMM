@@ -1,18 +1,19 @@
 from __future__ import print_function
 import argparse, math, random, time
 import itertools
+import matplotlib.pyplot as plt
 from DATParser import DATParser
 from ValidateConfig import ValidateConfig
 
-maxIter = 10
-alpha = 0.5
+maxIter = 20
+alpha = 0.4
 lambdaA = 100000 # Nurse not works, high penalization
 lambdaB = 1000 #
 lambdaC = 500
 lambdaD = 100
 lambdaE = 300
 
-
+print('alpha: '+ str(alpha))
 # Determine if the demand is satisfied with solution sol_h
 def isDemandSatisfied(sol_h, demand):
     #start = time.time()
@@ -458,7 +459,7 @@ def localSearch(sol):
             #print(count)
             start = time.time()
             workedHours = loadAndWorkedHours['workedHours']
-            #print('id ' + str(nurseId) + ' ' + str(len(workedHours)))
+            #print('id ' + str(nurseId))
             #print(time.time() - start)
             #start = time.time()
             #print('doing createPossibleReassignments')
@@ -477,9 +478,10 @@ def localSearch(sol):
             #print(possibleReassignments)
             #print(len(list(itertools.product(*possibleReassignments))))
             #print('doing reassignment')
-            countLimit = 10000
+            countLimit = 1000
             for reassignment in itertools.product(*possibleReassignments):
                 countLimit -= 1
+                #print(countLimit)
                 if countLimit < 0:
                     break
                 #print('I am changing schedule')
@@ -546,7 +548,9 @@ def localSearch(sol):
                     break
             if canEliminate:
                 #print(time.time() - start)
+                #print(canEliminate)
                 break
+        #print('update' + str(update))
         sol = list(solPrimePrime)
     return sol
 
@@ -630,23 +634,33 @@ def run():
     minCost = None
     minCostSol = None
     minGreedyCost = None
+    evol = []
     for i in xrange(maxIter):
         # Constructive phase
         print('Iteration:' + str(i))
+        print('Doing greedy constructive')
+        startTime2 = time.time()
         auxSol, auxCost = greedeConsturctive(config.hours, config.numNurses, config.demand)
+        endTime2 = time.time()
+        print('\n\nGreedy constructive time: ' + str(endTime2 - startTime2))
         if None != auxSol:
             # Local search
-            print('yes')
+            print('Doing local search')
+            startTime2 = time.time()
             newSol = localSearch(auxSol)
+            endTime2 = time.time()
+            print('\nLocal search time: ' + str(endTime2 - startTime2))
             if None != newSol:
                 if isFeasible(newSol)[0]:
-                    print('ls yes')
+                    #print('ls yes')
                     if None == minCostSol:
                         minCostSol = newSol
                         minCost = computeCost(newSol)
                         minGreedyCost = auxCost
+                        evol.append(minCost)
                     else:
                         newCost = computeCost(newSol)
+                        evol.append(newCost)
                         if newCost < minCost:
                             minCost = newCost
                             minCostSol = newSol
@@ -654,10 +668,10 @@ def run():
                             print('Min cost iteration is: ' + str(i))
     endTime = time.time()
     if None != minCostSol:
-        print('\nExecution time: ' + str(endTime - startTime))
         print('Result: \n')
         showResult(minCostSol)
         print(minGreedyCost)
+        print('\nExecution time: ' + str(endTime - startTime))
         """
         print('Doing local search')
         startTime = time.time()
@@ -672,6 +686,11 @@ def run():
             print('No improvement has been found')
             showResult(newSol)
         """
+    plt.plot(evol)
+    plt.xlabel('number of iterations')
+    plt.ylabel('Number of nurses')
+    plt.axis([0, len(evol), 0, config.numNurses])
+    plt.show()
 
 if __name__ == '__main__':
     run()
