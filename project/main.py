@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from grasp.GRASP import Grasp
+from brkga.BRKGA import Brkga
 import re
 import os
 import glob
@@ -24,11 +25,17 @@ def run_grasp(data, verbose=False):
     grasp = Grasp(data)
     if verbose:
         print(grasp)
-    solution = grasp.solve(remaining_iterations=10, alpha=0.2, seed=7, timeout=10, verbose=verbose)
+    solution = grasp.solve(remaining_iterations=1, alpha=0.2, seed=7, timeout=10, verbose=verbose)
     return solution
 
+
 def run_brkga(data, verbose=False):
-    return {}
+    brkga = Brkga(data)
+    if verbose:
+        print(brkga)
+    solution = brkga.solve(max_generations=100, num_individuals=10, elite_prop=0.1, mutant_prop=0.2,
+                           inheritance_prop=0.7, timeout=10, verbose=verbose)
+    return solution
 
 
 def main():
@@ -56,10 +63,14 @@ def main():
             print(f.name, end=', ')
         d = parse_data(data)
         sol = run_grasp(d, args.verbose) if args.grasp else run_brkga(d, args.verbose)
-        print(sol["cost"], ",", sol['time'])
+        if sol['found']:
+            print(sol["cost"], ",", sol['time'])
+        else:
+            print("Not Found, best cost:", sol['cost'])
         if args.verbose:
             for nurse in sol['schedule']:
                 print(nurse)
+            print("demand:", sol['demand'])
         if args.write:
             output.write(os.path.basename(path) + ", " + str(sol['cost']) + ", " + str(sol['time']) + "\n")
 
