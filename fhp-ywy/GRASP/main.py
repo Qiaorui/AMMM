@@ -4,8 +4,8 @@ import itertools
 from DATParser import DATParser
 from ValidateConfig import ValidateConfig
 
-maxIter = 1
-alpha = 0
+maxIter = 10
+alpha = 0.5
 lambdaA = 100000 # Nurse not works, high penalization
 lambdaB = 1000 #
 lambdaC = 500
@@ -410,7 +410,7 @@ def simpleCheck(workedHours):
         if workingHours > config.maxHours:
             # print('---Ops, you have to work less hours---')
             return False
-        """ 6. Check whether he/she exceeds the minHours, or we could add some hours to fulfill """
+        """ 6. Check whether he/she exceeds the minHours """
         if workingHours < config.minHours:
             return False
     return True
@@ -458,7 +458,7 @@ def localSearch(sol):
             #print(count)
             start = time.time()
             workedHours = loadAndWorkedHours['workedHours']
-            print('id ' + str(nurseId) + ' ' + str(len(workedHours)))
+            #print('id ' + str(nurseId) + ' ' + str(len(workedHours)))
             #print(time.time() - start)
             #start = time.time()
             #print('doing createPossibleReassignments')
@@ -625,25 +625,40 @@ def run():
     config = DATParser.parse(args.dataFile)
     ValidateConfig.validate(config)
     print(config.__dict__)
+
+    startTime = time.time()
     minCost = None
     minCostSol = None
-    startTime = time.time()
-    minCostSol, minCost = greedeConsturctive(config.hours, config.numNurses, config.demand)
-    endTime = time.time()
-    print('\nGreedy constructive time: ' + str(endTime - startTime))
-    print('Greedy constructive result: \n')
-    showResult(minCostSol)
-    """
+    minGreedyCost = None
     for i in xrange(maxIter):
         # Constructive phase
-        sol, cost = greedeConsturctive(config.hours, config.numNurses, config.demand)
-        # Local search
-        newSol, newCost = localSearch(sol)
-        if None == minCost:
-            minCost = newCost
-            minCostSol = newSol
-    """
+        print('Iteration:' + str(i))
+        auxSol, auxCost = greedeConsturctive(config.hours, config.numNurses, config.demand)
+        if None != auxSol:
+            # Local search
+            print('yes')
+            newSol = localSearch(auxSol)
+            if None != newSol:
+                if isFeasible(newSol)[0]:
+                    print('ls yes')
+                    if None == minCostSol:
+                        minCostSol = newSol
+                        minCost = computeCost(newSol)
+                        minGreedyCost = auxCost
+                    else:
+                        newCost = computeCost(newSol)
+                        if newCost < minCost:
+                            minCost = newCost
+                            minCostSol = newSol
+                            minGreedyCost = auxCost
+                            print('Min cost iteration is: ' + str(i))
+    endTime = time.time()
     if None != minCostSol:
+        print('\nExecution time: ' + str(endTime - startTime))
+        print('Result: \n')
+        showResult(minCostSol)
+        print(minGreedyCost)
+        """
         print('Doing local search')
         startTime = time.time()
         newSol = localSearch(minCostSol)
@@ -656,7 +671,7 @@ def run():
         else:
             print('No improvement has been found')
             showResult(newSol)
-
+        """
 
 if __name__ == '__main__':
     run()

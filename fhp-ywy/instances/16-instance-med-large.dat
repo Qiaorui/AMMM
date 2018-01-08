@@ -1,0 +1,7 @@
+numNurses=4029;
+hours=24;
+demand=[ 732 648 680 647 690 486 586 472 690 419 773 439 673 649 431 570 425 593 415 739 666 709 743 680 ];
+minHours=5;
+maxHours=9;
+maxConsec=6;
+maxPresence=10;

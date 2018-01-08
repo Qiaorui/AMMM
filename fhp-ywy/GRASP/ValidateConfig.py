@@ -38,3 +38,7 @@ class ValidateConfig(object):
 
         if (maxHours < minHours):
             raise Exception('maxHours(%s) has to be greater or equal than minHours(%s).' % (str(maxHours), str(minHours)))
+
+        if (maxPresence < maxHours):
+            raise Exception(
+                'maxPresence(%s) has to be greater or equal than maxHours(%s).' % (str(maxPresence), str(maxHours)))
