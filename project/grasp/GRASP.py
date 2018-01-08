@@ -1,5 +1,6 @@
 import math
 import random
+from timeit import default_timer as timer
 
 
 def first_index_nonzero(numbers):
@@ -41,7 +42,7 @@ class Grasp:
     def fill_combinations(self, comb, remaining_size, remaining_consec, remaining_time, rest):
         candidates = []
         if not remaining_size:
-            if self.maxHours - remaining_time > self.minHours:
+            if self.maxHours - remaining_time >= self.minHours:
                 comb2 = comb[:]
                 candidates.append(comb)
                 if comb2[-1] == 0:
@@ -120,6 +121,7 @@ class Grasp:
     def construct_schedule(self, demand, candidates, alpha):
         schedule = []
         pos = first_index_nonzero(demand)
+        pos = min(pos, self.hours - self.combSize)
         while pos != -1:
             # Update greedy costs
             candidate_costs = self.evaluate_candidates(pos, pos + self.combSize, candidates, demand)
@@ -189,19 +191,24 @@ class Grasp:
         candidates = self.fill_combinations([1], self.combSize-1, self.maxConsec-1, self.maxHours-1, False)
         return candidates
 
-    def solve(self, remaining_iterations=1000, alpha=0.25, seed=1, config={}):
+    def solve(self, remaining_iterations=1000, alpha=0.25, seed=1, config={}, timeout=math.inf):
+        start_process = timer()
+
         random.seed(seed)
         if config:
             self.read_input(config)
         candidates = self.initialize_candidates()
-        print("candidates size:", len(candidates))
 
         opt = {"cost": math.inf}
-        while remaining_iterations:
+        while remaining_iterations and timer() - start_process < timeout:
             sol = self.greedy_randomized_construction(candidates, alpha)
-            sol = self.local_search(candidates, sol, alpha)
+            sol = self.local_search(candidates, sol, alpha/2)
             if sol["cost"] < opt["cost"]:
                 opt = sol
             remaining_iterations -= 1
         opt["found"] = True if opt["cost"] <= self.numNurses else False
+
+        end_process = timer()
+        opt['time'] = round(end_process - start_process, 3)
+
         return opt

@@ -15,6 +15,11 @@ if [ ! -d "benchmark" ]; then
   python generator/main.py
 fi
 
+if [ $1 = "grasp" ]; then
+	python3 grasp/main.py benchmark/*
+	exit
+fi
+
 echo "->Detecting OS"
 case "$(uname -s)" in
 
@@ -48,9 +53,6 @@ case "$(uname -s)" in
     echo '  MS Windows Detected, Running...'
     oplrun.exe $X_ARGS
     ;;
-
-   # Add here more strings to compare
-   # See correspondence table at the bottom of this answer
 
   *)
     echo '  Unknown OS, exit' 

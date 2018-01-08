@@ -68,7 +68,7 @@ main {
 	fList.sort(mSortFunction);
 	
 	// Write CPLEX result to file
-	var output = new IloOplOutputFile("result.txt");
+	var output = new IloOplOutputFile("ilp_result.txt");
 	for (var k = 0; k < fList.length; k++) {
 		var msg = fList[k];
 		var cplex = new IloCplex();
