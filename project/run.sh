@@ -16,7 +16,7 @@ if [ ! -d "benchmark" ]; then
 fi
 
 if [ $1 = "grasp" ]; then
-	python3 grasp/main.py benchmark/*
+	python3 -u grasp/main.py benchmark/*
 	exit
 fi
 

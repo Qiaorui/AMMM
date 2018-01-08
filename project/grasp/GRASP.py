@@ -12,8 +12,9 @@ def first_index_nonzero(numbers):
 
 class Grasp:
 
-    def __init__(self, config={}):
-        self.numNurses, self.hours, self.demand, self.minHours, self.maxHours, self.maxConsec, self.maxPresence, self.combSize = (0,)*8
+    def __init__(self, config=None):
+        self.numNurses, self.hours, self.demand, self.minHours, self.maxHours, self.maxConsec, self.maxPresence, \
+            self.combSize = (0,)*8
         if config:
             self.read_input(config)
 
@@ -191,7 +192,7 @@ class Grasp:
         candidates = self.fill_combinations([1], self.combSize-1, self.maxConsec-1, self.maxHours-1, False)
         return candidates
 
-    def solve(self, remaining_iterations=1000, alpha=0.25, seed=1, config={}, timeout=math.inf):
+    def solve(self, remaining_iterations=1000, alpha=0.25, seed=1, config=None, timeout=math.inf):
         start_process = timer()
 
         random.seed(seed)
