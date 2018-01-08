@@ -15,11 +15,6 @@ if [ ! -d "benchmark" ]; then
   python generator/main.py
 fi
 
-if [ $1 = "grasp" ]; then
-	python3 -u grasp/main.py benchmark/*
-	exit
-fi
-
 echo "->Detecting OS"
 case "$(uname -s)" in
 
@@ -27,7 +22,7 @@ case "$(uname -s)" in
     echo '  Mac OS Detected, no OPL supported. please change to Linux or Windows'
     ;;
 
-  Linux)
+  Linux)§
     echo '  Linux Detected, Running...'
     P="$(printenv LD_LIBRARY_PATH)"
     echo $P

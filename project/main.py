@@ -33,8 +33,8 @@ def run_brkga(data, verbose=False):
     brkga = Brkga(data)
     if verbose:
         print(brkga)
-    solution = brkga.solve(max_generations=100, num_individuals=50, elite_prop=0.1, mutant_prop=0.2,
-                           inheritance_prop=0.7, timeout=10, verbose=verbose)
+    solution = brkga.solve(max_generations=100, num_individuals=100, elite_prop=0.15, mutant_prop=0.2,
+                           inheritance_prop=0.7, timeout=600, verbose=verbose)
     return solution
 
 

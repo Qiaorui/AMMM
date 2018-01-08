@@ -5,13 +5,6 @@ from Nurse_Scheduling import NurseScheduling
 from timeit import default_timer as timer
 
 
-def first_index_nonzero(numbers):
-    for i, v in enumerate(numbers):
-        if v > 0:
-            return i
-    return -1
-
-
 class Brkga(NurseScheduling):
 
     def __init__(self, data=None):
@@ -67,7 +60,7 @@ class Brkga(NurseScheduling):
         order = sorted(range(len(fitness)), key=lambda k: fitness[k])
         return population[order[0]]
 
-    def solve(self, max_generations=100, num_individuals=10, elite_prop=0.1, mutant_prop=0.2,
+    def solve(self, max_generations=100, num_individuals=50, elite_prop=0.1, mutant_prop=0.2,
               inheritance_prop=0.7, timeout=math.inf, verbose=False):
         start_process = timer()
         self.verbose = verbose
@@ -79,7 +72,6 @@ class Brkga(NurseScheduling):
 
         self.combSize = min(self.maxPresence, (self.maxHours << 1) - 1)
         candidates = self.generate_combinations([1], self.combSize - 1, self.maxConsec - 1, self.maxHours - 1, False)
-        candidates.sort(reverse=True)
 
         evol = []
 
@@ -134,43 +126,41 @@ class Brkga(NurseScheduling):
         return data['numNurses'] * 2
 
     def decode(self, population, data, candidates):
+        candidates_size = len(candidates)
+        comb_size = self.combSize
+        max_pivot = max(self.hours - comb_size, 0)
+        pivot_segment = 1/self.hours
+        candidate_segment = 1/candidates_size
+
         for ind in population:
-            solution, fitness = self.decoder_assignment(data, ind['chr'], candidates)
+            solution, fitness = self.decoder_assignment(ind['chr'], candidates, pivot_segment, comb_size, max_pivot,
+                                                        candidate_segment, candidates_size)
             ind['solution'] = solution
             ind['fitness'] = fitness
         return population
 
-    @staticmethod
-    def update_demand(schedule, demand):
-        new_demand = demand[:]
-        for i, nurse in enumerate(schedule):
-            for j, works in enumerate(nurse):
-                if works:
-                    new_demand[j] -= 1
-        return new_demand
-
-    def decoder_assignment(self, data, chromosome, candidates):
+    def decoder_assignment(self, chromosome, candidates, pivot_segment, comb_size, max_pivot,
+                           candidate_segment, candidates_size):
         chr_candidates = chromosome[0:self.numNurses]
         chr_pivot = chromosome[self.numNurses:]
+        demand = self.demand[:]
 
         schedule = []
-        candidates_size = len(candidates)
-        comb_size = min(data['maxPresence'], (data['maxHours'] << 1) - 1)
-        max_pivot = max(data['hours'] - comb_size, 0)
-        pivot_segment = 1/self.hours
-        candidate_segment = 1/candidates_size
 
-        # schedule - chr_candidates - chr_pivot   They share same INDEX
         for c, p in zip(chr_candidates, chr_pivot):
             pivot = int(min(max(math.floor(p / pivot_segment) - comb_size/2, 0), max_pivot))
             s = int(min(math.floor(c / candidate_segment), candidates_size-1))
-            schedule.append([0]*pivot + candidates[s] + [0] * (data['hours'] - pivot - comb_size))
+            assignment = candidates[s]
+            for i in range(comb_size):
+                demand[pivot + i] -= assignment[i]
+            schedule.append([0]*pivot + assignment + [0] * (self.hours - pivot - comb_size))
 
-        demand = self.update_demand(schedule, data['demand'])
-
-        solution = self.clear_solution(schedule, demand)
-        if sum([i for i in demand if i > 0]) > 0:
-            solution['cost'] += self.numNurses
+        solution = self.generate_solution(schedule, demand)
+        remaining_demand = sum([i for i in demand if i > 0])
+        if remaining_demand > 0:
+            solution['cost'] += remaining_demand
+        else:
+            solution = self.clear_solution(schedule, demand)
 
         return solution, solution['cost']
 
