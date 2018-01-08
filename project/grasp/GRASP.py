@@ -15,6 +15,7 @@ class Grasp:
     def __init__(self, config=None):
         self.numNurses, self.hours, self.demand, self.minHours, self.maxHours, self.maxConsec, self.maxPresence, \
             self.combSize = (0,)*8
+        self.verbose = False
         if config:
             self.read_input(config)
 
@@ -135,6 +136,8 @@ class Grasp:
             # Update remaining demand
             for i in range(pos, pos + self.combSize):
                 demand[i] -= assignment[i - pos]
+            if self.verbose:
+                print(demand)
 
             # Update position
             pos = first_index_nonzero(demand)
@@ -192,16 +195,19 @@ class Grasp:
         candidates = self.fill_combinations([1], self.combSize-1, self.maxConsec-1, self.maxHours-1, False)
         return candidates
 
-    def solve(self, remaining_iterations=1000, alpha=0.25, seed=1, config=None, timeout=math.inf):
+    def solve(self, remaining_iterations=1000, alpha=0.25, seed=1, config=None, timeout=math.inf, verbose=False):
         start_process = timer()
 
+        self.verbose = verbose
         random.seed(seed)
         if config:
             self.read_input(config)
         candidates = self.initialize_candidates()
+        if self.verbose:
+            print("candidates size: ", len(candidates))
 
         opt = {"cost": math.inf}
-        while remaining_iterations and timer() - start_process < timeout:
+        while remaining_iterations and ('schedule' not in opt or timer() - start_process < timeout):
             sol = self.greedy_randomized_construction(candidates, alpha)
             sol = self.local_search(candidates, sol, alpha/2)
             if sol["cost"] < opt["cost"]:

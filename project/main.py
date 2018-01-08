@@ -20,12 +20,14 @@ def sort_function(x):
     return int(''.join(re.findall(r'\d+', os.path.basename(x))))
 
 
-def run_grasp(data):
+def run_grasp(data, verbose=False):
     grasp = Grasp(data)
-    solution = grasp.solve(remaining_iterations=10, alpha=0.2, seed=7, timeout=10)
+    if verbose:
+        print(grasp)
+    solution = grasp.solve(remaining_iterations=10, alpha=0.2, seed=7, timeout=10, verbose=verbose)
     return solution
 
-def run_brkga(data):
+def run_brkga(data, verbose=False):
     return {}
 
 
@@ -53,7 +55,7 @@ def main():
             data = "".join([x.strip() for x in data])
             print(f.name, end=', ')
         d = parse_data(data)
-        sol = run_grasp(d) if args.grasp else run_brkga(d)
+        sol = run_grasp(d, args.verbose) if args.grasp else run_brkga(d, args.verbose)
         print(sol["cost"], ",", sol['time'])
         if args.verbose:
             for nurse in sol['schedule']:
