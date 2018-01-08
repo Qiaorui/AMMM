@@ -5,8 +5,8 @@ This is a lab repository for the course Algorithmic Methods for Mathematical Mod
 ## Nurse project
 
 ### Current working status
-* Run benchmark using ilp model
-* Study GRASP and BRKGA, then do the pseudo-code
+* Generate new benchmark for GRASP and BRKGA
+* Design BRKGA
 
 ### Project overview
 | Task                              | Status   |
@@ -14,8 +14,8 @@ This is a lab repository for the course Algorithmic Methods for Mathematical Mod
 | Problem formulation               | done     |
 | Integer linear programming model  | done     |  
 | Instance generator                | done     |
-| GRASP                             | study    |
-| BRKGA                             | study    |
+| GRASP                             | done     |
+| BRKGA                             | doing    |
 | Write the report                  |    -     |
 
 
