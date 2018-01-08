@@ -149,36 +149,6 @@ class Brkga(NurseScheduling):
                     new_demand[j] -= 1
         return new_demand
 
-
-    # Return list of index of candidates and pivots [(candidate, pivot) ... ]
-    def local_search(self, demand, candidates):
-        schedule = []
-        pivot = first_index_nonzero(demand)
-        pivot = min(pivot, self.hours - self.combSize)
-        while pivot != -1:
-            # Find local best schedule
-            best_index = -1
-            best_value = math.inf
-            sub_demand = demand[pivot: pivot + self.combSize]
-            for i, nurse in enumerate(candidates):
-                value = sum([i - j for i, j in zip(sub_demand, nurse) if i > 0])
-                if value < best_value:
-                    best_value = value
-                    best_index = i
-                    if best_value == 0:
-                        break
-
-            schedule.append((best_index, pivot))
-
-           # Update remaining demand
-            for i in range(pivot, pivot + self.combSize):
-                demand[i] -= candidates[best_index][i - pivot]
-
-            # Update position
-            pivot = first_index_nonzero(demand)
-            pivot = min(pivot, self.hours - self.combSize)
-        return schedule
-
     def decoder_assignment(self, data, chromosome, candidates):
         chr_candidates = chromosome[0:self.numNurses]
         chr_pivot = chromosome[self.numNurses:]
@@ -198,31 +168,9 @@ class Brkga(NurseScheduling):
 
         demand = self.update_demand(schedule, data['demand'])
 
-        surplus = []
-        for i, nurse in enumerate(schedule):
-            found = all([k < 0 for j, k in zip(nurse, demand) if j])
-            if found:
-                for j, works in enumerate(nurse):
-                    if works:
-                        demand[j] += 1
-                surplus.append(i)
-        surplus.sort(reverse=True)
-
-        local_optium = self.local_search(demand, candidates)
-
-        for c, p in local_optium:
-            if not surplus:
-                break
-            replace_index = surplus.pop()
-            schedule[replace_index] = candidates[c]
-            chromosome[replace_index] = ((c << 1) + 1) * candidate_segment / 2
-            chromosome[self.numNurses + replace_index] = ((p << 1) + self.combSize + 1) * pivot_segment / 2
-
-        demand = self.update_demand(schedule, data['demand'])
-
         solution = self.clear_solution(schedule, demand)
         if sum([i for i in demand if i > 0]) > 0:
-            solution['cost'] = math.inf
+            solution['cost'] += self.numNurses
 
         return solution, solution['cost']
 
