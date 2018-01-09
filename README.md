@@ -5,7 +5,7 @@ This is a lab repository for the course Algorithmic Methods for Mathematical Mod
 ## Nurse project
 
 ### Current working status
-* Statistic
+* Close
 
 ### Project overview
 | Task                              | Status   |
@@ -15,7 +15,7 @@ This is a lab repository for the course Algorithmic Methods for Mathematical Mod
 | Instance generator                | done     |
 | GRASP                             | done     |
 | BRKGA                             | done     |
-| Write the report                  | In       |
+| Report                            | done     |
 
 
 ## Usage
