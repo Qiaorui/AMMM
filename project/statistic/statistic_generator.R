@@ -61,9 +61,11 @@ legend(x= "topleft", y=0.92,legend=c("ilp","brkga","grasp"), col=c("blue","red",
 
 
 # Compare brkga and grasp
-min_common_size = min(nrow(brkga_data), nrow(grasp_data))
-sub_brkga = head(brkga_data, min_common_size)
-sub_grasp = head(grasp_data, min_common_size)
+min_common_size2 = min(nrow(brkga_data), nrow(grasp_data))
+sub_brkga = head(brkga_data, min_common_size2)
+sub_brkga = tail(sub_brkga, min_common_size2 - min_common_size)
+sub_grasp = head(grasp_data, min_common_size2)
+sub_grasp = tail(sub_grasp, min_common_size2 - min_common_size)
 
 # Compare time
 time_table = data.frame(level=sub_brkga[1], brkga=as.numeric(unlist(sub_brkga[3])), grasp=as.numeric(unlist(sub_grasp[3])) )

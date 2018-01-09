@@ -38,11 +38,11 @@
    	forall (n in N, h in 1..(hours-maxConsec))
    	  	sum (i in h..(h+maxConsec)) works[n,i] <= maxConsec;  
    	
-   	// 5
+   	// 5 each nurse should not stay in hospital more than max presence hours
    	forall(n in N, h in 1..hours-maxPresence)
  	  sum(i in h+maxPresence..hours) works[n, i] <= hours * (1 - works[n, h]);
  	  	
-	// 6
+	// 6 each nurse should not rest consecutively
 	forall (n in N, h in 1..(hours-3))
 	  	 (1 - works[n,h] + works[n,h+1] + works[n,h+2]) * hours >= sum(i in h+3..hours)works[n,i];
    	
