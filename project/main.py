@@ -25,7 +25,7 @@ def run_grasp(data, verbose=False):
     grasp = Grasp(data)
     if verbose:
         print(grasp)
-    solution = grasp.solve(remaining_iterations=10, alpha=0.2, seed=7, timeout=100, verbose=verbose)
+    solution = grasp.solve(remaining_iterations=100, alpha=0.2, seed=7, timeout=600, verbose=verbose)
     return solution
 
 
