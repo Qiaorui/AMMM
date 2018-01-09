@@ -48,8 +48,8 @@ class Grasp(NurseScheduling):
             # Update remaining demand
             for i in range(pivot, pivot + self.combSize):
                 demand[i] -= assignment[i - pivot]
-            if self.verbose:
-                print(demand)
+            #if self.verbose:
+                #print(demand)
 
             # Update position
             pivot = first_index_nonzero(demand)
@@ -124,6 +124,8 @@ class Grasp(NurseScheduling):
             sol = self.local_search(candidates, sol, alpha/2)
             if sol["cost"] < opt["cost"]:
                 opt = sol
+            if self.verbose:
+                print(remaining_iterations, ': sol=', sol['cost'], ' opt=', opt['cost'])
             remaining_iterations -= 1
         opt["found"] = True if opt["cost"] <= self.numNurses else False
 
