@@ -1,4 +1,5 @@
 import random
+import math
 
 
 class Instance:
@@ -19,7 +20,7 @@ class Instance:
         self.maxHours = random.randrange(min(max(self.hours//4, 3), 10), min(self.hours // 1.5, 20))
         self.numNurses = int(max(self.demand) * self.hours / self.maxHours * 1.5)
         self.maxPresence = random.randrange(self.maxHours + 1, min(self.maxHours * 2 - 1, self.hours, 24))
-        self.maxConsec = random.randrange(2, self.maxHours)
+        self.maxConsec = random.randrange(math.ceil(self.minHours / (self.maxPresence - self.minHours)), self.maxHours)
         self.minHours = random.randrange(1, self.maxHours)
 
     def __str__(self):
