@@ -91,7 +91,7 @@ class Grasp(NurseScheduling):
 
     def local_search(self, candidates, solution, alpha):
         # Remove less efficient assignment
-        new_schedule, new_demand = self.construct_neighbor(solution['schedule'], solution['demand'], alpha)
+        new_schedule, new_demand = self.construct_neighbor(solution['schedule'], solution['demand'], alpha/2)
         # Do greedy construction with removed demand and merge
         new_schedule.extend(self.construct_schedule(new_demand, candidates, 0))
 
@@ -121,7 +121,7 @@ class Grasp(NurseScheduling):
         opt = {"cost": math.inf}
         while remaining_iterations and ('schedule' not in opt or timer() - start_process < timeout):
             sol = self.greedy_randomized_construction(candidates, alpha)
-            sol = self.local_search(candidates, sol, alpha/2)
+            sol = self.local_search(candidates, sol, alpha)
             if sol["cost"] < opt["cost"]:
                 opt = sol
             if self.verbose:
