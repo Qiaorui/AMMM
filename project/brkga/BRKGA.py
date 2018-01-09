@@ -114,7 +114,7 @@ class Brkga(NurseScheduling):
         end_process = timer()
         solution = best_individual['solution']
         solution["found"] = True if solution["cost"] <= self.numNurses else False
-        solution['time'] = end_process - start_process
+        solution['time'] = round(end_process - start_process, 3)
         return solution
 
     """
@@ -144,7 +144,6 @@ class Brkga(NurseScheduling):
         chr_candidates = chromosome[0:self.numNurses]
         chr_pivot = chromosome[self.numNurses:]
         demand = self.demand[:]
-
         schedule = []
 
         for c, p in zip(chr_candidates, chr_pivot):

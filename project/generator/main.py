@@ -1,16 +1,17 @@
 #!/usr/bin/python
 import random
 import os
-from nurseTest import Instance
+from Generator import Instance
 
 start = 8
 end = 100
 repetition = 10
+seed = 7
 directory = "./benchmark/"
 
 
 def main():
-    random.seed(7)
+    random.seed(seed)
 
     if not os.path.exists(directory):
         os.makedirs(directory)

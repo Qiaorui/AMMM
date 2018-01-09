@@ -16,9 +16,9 @@ class Instance:
 
     def random(self):
         self.demand = [int(self.hours/1.5*random.random()) for i in range(self.hours)]
-        self.maxHours = random.randrange(max(self.hours//4, 3), self.hours // 1.5)
-        self.numNurses = int(self.hours * 4 / 1.5)
-        self.maxPresence = random.randrange(self.maxHours + 1, min(self.maxHours * 2 - 1, self.hours))
+        self.maxHours = random.randrange(min(max(self.hours//4, 3), 10), min(self.hours // 1.5, 20))
+        self.numNurses = int(max(self.demand) * self.hours / self.maxHours * 1.5)
+        self.maxPresence = random.randrange(self.maxHours + 1, min(self.maxHours * 2 - 1, self.hours, 24))
         self.maxConsec = random.randrange(2, self.maxHours)
         self.minHours = random.randrange(1, self.maxHours)
 

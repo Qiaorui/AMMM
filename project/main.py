@@ -25,7 +25,7 @@ def run_grasp(data, verbose=False):
     grasp = Grasp(data)
     if verbose:
         print(grasp)
-    solution = grasp.solve(remaining_iterations=1, alpha=0.2, seed=7, timeout=10, verbose=verbose)
+    solution = grasp.solve(remaining_iterations=10, alpha=0.2, seed=7, timeout=100, verbose=verbose)
     return solution
 
 
@@ -42,7 +42,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("path", nargs='+', help="input file path")
     parser.add_argument("-v", "--verbose", action="store_true", help="increase output verbosity")
-    parser.add_argument("-w", "--write", action="store_true", help="write to file")
+    parser.add_argument("-w", dest="output_file", action="store", help="write to file")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-g", "--grasp", action="store_true", help="use GRASP algorithm")
     group.add_argument("-b", "--brkga", action="store_true", help="use BRKGA algorithm")
@@ -52,9 +52,6 @@ def main():
     for pattern in args.path:
         input_path.extend(glob.glob(pattern))
     input_path.sort(key=sort_function)
-
-    if args.write:
-        output = open("grasp_result.txt", "a")
 
     for path in input_path:
         with open(path, "r") as f:
@@ -71,11 +68,9 @@ def main():
             for nurse in sol['schedule']:
                 print(nurse)
             print("demand:", sol['demand'])
-        if args.write:
-            output.write(os.path.basename(path) + ", " + str(sol['cost']) + ", " + str(sol['time']) + "\n")
-
-    if args.write:
-        output.close()
+        if args.output_file:
+            with open(args.output_file, 'a') as output:
+                output.write(os.path.basename(path) + ", " + str(sol['cost']) + ", " + str(sol['time']) + "\n")
 
 
 if __name__ == "__main__":
