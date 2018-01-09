@@ -5,32 +5,33 @@ In this project, we need to design a working schedule for a set of nurses in a w
 The problem requires that the number of nurses working each hour must fulfill the demand for that hour. In addition, there are some limitations on how the working hours should be scheduled. The working hours of nurses must be within a range: between minimum hour and maximum hour. The nurses must take an one hour break when they reached maximum consecutive hour. Furthermore, the nurses can only stay in the hospital for maximum presence hour.
 
 ## Directory overview
+```
 .   
-├── Nurse_Scheduling.py     
+├── Nurse_Scheduling.py             Parent Class with share function
 ├── README.md       
-├── benchmark/   
+├── benchmark/                      Benchmark Instances
 ├── brkga   
-│   └── BRKGA.py    
+│   └── BRKGA.py                    BRKGA algorithm
 ├── generator   
-│   ├── Generator.py    
+│   ├── Generator.py                Benchmark Generator
 │   └── main.py     
 ├── grasp   
-│   └── GRASP.py    
+│   └── GRASP.py                    GRASP algorithm
 ├── ilp     
 │   ├── config.dat      
-│   ├── ilp.mod     
-│   ├── main.mod        
+│   ├── ilp.mod                     ilp model
+│   ├── main.mod                    Use this to run batch test
 │   ├── test/  
-│   └── unit_test.mod   
-├── main.py     
-├── report.pdf  
-├── run_ilp.sh  
+│   └── unit_test.mod               Unit Test module
+├── main.py                         Script to execute Meta-heuristic
+├── report.pdf                      Text Report
+├── run_ilp.sh                      Script if you dot't want IDE
 └── statistic   
     ├── brkga_result.txt    
     ├── grasp_result.txt    
     ├── ilp_result.txt  
-    └── statistic_generator.R
-
+    └── statistic_generator.R       Use R to generate statistic plot
+```
 
 ## Test
 Unit Tests are under folder '/ilp/test'.
